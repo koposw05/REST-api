@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<!-- 합쳐지고 최소화된 최신 CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<!-- 부가적인 테마 -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+<!-- 합쳐지고 최소화된 최신 자바스크립트 -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<meta charset="UTF-8">
+<title>GUIDE</title>
+
+<style>
+textarea{
+	width:250px;
+	height:250px;
+}
+</style>
+<script >
+var successcount = 0;
+var failcount = 0;
+</script>
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			
+			<!-- buttons -->
+			<div class="col col-xs-3">
+				
+				<button id="id-xml-to-json" type="button" class="btn btn-info btn-block">xml to json</button>
+				<br />
+												
+				<button id="id-json-to-xml" type="button" class="btn btn-warning btn-block">json to xml</button>			
+				<br />
+																	
+			</div>
+						
+			<div class="col col-xs-1">
+			</div>
+			
+			<!-- output -->
+			<div class="col col-xs-8">
+				<div id="xml-to-json" style="display:none;">
+					<button type="button" id="convert-xml-to-json">convert</button>
+					<textarea id="input-xml">
+<?xml version='1.0' encoding='utf-8'?>
+<bookstore>
+<book category='cooking'>
+<title lang='en'>Everyday Italian</title>
+<author>Giada De Laurentis</author>
+<year>205</year>
+<price>30.0</price>
+</book>
+<book category='children'>
+<title lang='en'>Hary Poter</title>
+<author>J K. Rowling</author>
+<year>205</year>
+<price>29.9</price>
+</book>
+</bookstore>
+</textarea>
+					
+					<textarea id="output-xml-to-json"></textarea>
+				</div>
+				
+				<div id="json-to-xml" style="display:none;">
+					<button type="button" id="convert-json-to-xml">convert</button>
+					<textarea id="input-json">{
+    "bookstore": {
+        "book": [
+            {
+                "year": 205,
+                "author": "Giada De Laurentis",
+                "price": 30,
+                "category": "cooking",
+                "title": {
+                    "lang": "en",
+                    "content": "Everyday Italian"
+                }
+            },
+            {
+                "year": 205,
+                "author": "J K. Rowling",
+                "price": 29.9,
+                "category": "children",
+                "title": {
+                    "lang": "en",
+                    "content": "Hary Poter"
+                }
+            }
+        ]
+    }
+}</textarea>
+					
+					<textarea id="output-json-to-xml"></textarea>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id ="status" style="display:none; margin: 15px 25px 15px 10px;">
+	<input id="sucess" type="text"> <input id="fail" type="text"> <input id="total" type="text" >
+	
+	</div>
+</body>
+
+
+<script>
+
+
+$("#id-xml-to-json").on("click",function(){
+	$("#output-xml-to-json").empty();
+	$("#xml-to-json").show();
+	$("#json-to-xml").hide();
+	$("#status").show();
+	
+});
+
+$("#id-json-to-xml").on("click",function(){
+	$("#xml-to-json").hide();
+	$("#output-json-to-xml").empty();
+	$("#json-to-xml").show();
+	$("#status").show();
+	
+});
+
+var url = "http://localhost:8080/";
+
+var xml2json = function(_data){
+	
+	$.ajax({   
+	    type: "POST",   
+	    url: url + "xml2json",   
+	    data: _data,
+	    contentType : "application/xml",
+	    cache: false,
+		success : function(data) {   
+			
+	    	$("#output-xml-to-json").html(JSON.stringify(data,null,4));
+	    	successcount++;
+	    	$('#sucess').val("성공 :"+ (successcount));
+	    	$('#fail').val("실패 :"+(failcount));
+	    	$('#total').val("실행횟수 :"+ (successcount+failcount));
+		},
+		error : function(){
+			$("#output-xml-to-json").html("xml2json error");
+			failcount++;
+			$('#sucess').val("성공 :"+ (successcount));
+			$('#fail').val("실패 :"+(failcount));
+			$('#total').val("실행횟수 :"+ (successcount+failcount));
+		}
+	});
+	
+	
+	
+}
+
+var json2xml = function(_data){
+	$.ajax({   
+	    type: "POST",   
+	    url: url + "json2xml",   
+	    data: _data,
+	    contentType : "application/json",
+	    cache: false,
+		success : function(data) {  
+			var xmlText = new XMLSerializer().serializeToString(data);		
+	    	$("#output-json-to-xml").html(xmlText);
+	    	successcount++;
+	    	$('#sucess').val("성공 :"+ (successcount));
+	    	$('#fail').val("실패 :"+(failcount));
+	    	$('#total').val("실행횟수 :"+ (successcount+failcount));
+		},
+		error : function(){
+			$("#output-json-to-xml").html("json2xml error");
+			failcount++;
+			$('#sucess').val("성공 :"+ (successcount));
+			$('#fail').val("실패 :"+(failcount));
+			$('#total').val("실행횟수 :"+ (successcount+failcount));
+		}
+	});
+}
+
+$("#convert-xml-to-json").on("click",function(){
+	
+	
+	var data = $("#input-xml").val();
+	
+	if(!data) {
+		data = "<data></data>"
+	}
+	xml2json(data);
+});
+
+$("#convert-json-to-xml").on("click",function(){
+	var data = $("#input-json").val();
+	if(!data) {
+		data = "{ a : 1 }"
+	}
+	json2xml(data);
+});
+</script>
+
+</html>

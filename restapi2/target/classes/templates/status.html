@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>  
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js">
+</script>
+<script>
+var url = "http://192.168.23.117:8080/"
+$(document).ready(function() {
+    $('#example').DataTable({
+    // scrollY:500,
+     pageLength: 3,
+     bPaginate: true,
+     bLengthChange: false,
+     lengthMenu : [ [ 3, 5, 10, -1 ], [ 3, 5, 10, "All" ] ],
+     bAutoWidth: false, //컬럼 폭 자동계산
+     processing: true,
+     ordering: true, //정렬사용
+     serverSide: false,
+     searching: false, //검색
+     columnDefs: [
+         {"className": "dt-center", "targets": "_all"} //데이터 가운데 정렬
+       ],
+     ajax: {
+      type : "POST",
+         url : url + "getRecordList.do",
+            dataType: "JSON"
+         },
+        columns: [            		
+                   { data: "process" },
+                   { data: "success" },
+                   { data: "fail" },
+                   { data: "total" },
+                  
+               ]
+    });
+} );
+</script>
+ 
+<meta charset="UTF-8">
+<title>Status</title>
+
+	<title>Bar Chart</title>
+	<script src="http://www.chartjs.org/dist/2.7.2/Chart.bundle.js"></script>
+	<script src="http://www.chartjs.org/samples/latest/utils.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+	<script src="http://www.chartjs.org/dist/2.7.2/Chart.js"></script>
+	<style>
+	canvas {
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+	</style>
+	
+</head>
+<body>
+
+     <div>
+     <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
+
+    <thead>
+        <tr ><h1>STATUS</h1>
+            <th>PROCESS</th>
+            <th>SUCCESS</th>
+            <th>FAIL</th>
+            <th>CALLTOTAL</th>
+        </tr>
+    </thead>
+    <!-- tbody 태그 필요 없다. -->
+</table>
+     </div>
+     <div id="container" style="width: 75%;">
+		<canvas id="canvas"></canvas>
+		
+	</div>
+	
+	<div id="canvas-holder" style="width:40%">
+		<canvas id="chart-area"></canvas>
+	</div>
+	
+	<script>
+		var randomScalingFactor = function() {
+			return Math.round(Math.random() * 100);
+		};
+
+		var config = {
+			type: 'pie',
+			data: {
+				datasets: [{
+					data: [
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+					],
+					backgroundColor: [
+						window.chartColors.red,
+						window.chartColors.orange,
+						window.chartColors.yellow,
+						window.chartColors.green,
+						window.chartColors.blue,
+					],
+					label: 'Dataset 1'
+				}],
+				labels: [
+					'Red',
+					'Orange',
+					'Yellow',
+					'Green',
+					'Blue'
+				]
+			},
+			options: {
+				responsive: true
+			}
+		};
+
+		window.onload = function() {
+			var ctx = document.getElementById('chart-area').getContext('2d');
+			window.myPie = new Chart(ctx, config);
+		};
+
+		document.getElementById('randomizeData').addEventListener('click', function() {
+			config.data.datasets.forEach(function(dataset) {
+				dataset.data = dataset.data.map(function() {
+					return randomScalingFactor();
+				});
+			});
+
+			window.myPie.update();
+		});
+
+		var colorNames = Object.keys(window.chartColors);
+		document.getElementById('addDataset').addEventListener('click', function() {
+			var newDataset = {
+				backgroundColor: [],
+				data: [],
+				label: 'New dataset ' + config.data.datasets.length,
+			};
+
+			for (var index = 0; index < config.data.labels.length; ++index) {
+				newDataset.data.push(randomScalingFactor());
+
+				var colorName = colorNames[index % colorNames.length];
+				var newColor = window.chartColors[colorName];
+				newDataset.backgroundColor.push(newColor);
+			}
+
+			config.data.datasets.push(newDataset);
+			window.myPie.update();
+		});
+
+		document.getElementById('removeDataset').addEventListener('click', function() {
+			config.data.datasets.splice(0, 1);
+			window.myPie.update();
+		});
+	</script>
+	
+	<div>
+	<button onclick=location.href='http://192.168.23.117:8080' style="WIDTH: 60pt; HEIGHT: 30pt">메인으로</button>
+	</div>
+     
+</body>
+</html>

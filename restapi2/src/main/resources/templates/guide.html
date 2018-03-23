@@ -1,50 +1,69 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <!-- 합쳐지고 최소화된 최신 CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 <!-- 부가적인 테마 -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
 <!-- 합쳐지고 최소화된 최신 자바스크립트 -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 <meta charset="UTF-8">
 <title>GUIDE</title>
 
 <style>
-textarea{
-	width:250px;
-	height:250px;
+textarea {
+	width: 250px;
+	height: 250px;
 }
 </style>
-<script >
-var successcount = 0;
-var failcount = 0;
+<script>
+var xtojSuccessCount = 0;
+var xtojFailCount = 0;
+var jtoxSuccessCount = 0;
+var jtoxFailCount = 0;
+
 </script>
 </head>
 <body>
+	<center>
+		<h1>XML - JSON 양방향 변환</h1>
+	</center>
 	<div class="container-fluid">
 		<div class="row">
-			
+
 			<!-- buttons -->
-			<div class="col col-xs-3">
-				
-				<button id="id-xml-to-json" type="button" class="btn btn-info btn-block">xml to json</button>
-				<br />
-												
-				<button id="id-json-to-xml" type="button" class="btn btn-warning btn-block">json to xml</button>			
-				<br />
-																	
-			</div>
-						
-			<div class="col col-xs-1">
-			</div>
+			<div style="margin: 15px 25px 15px 10px;">
+
+				<button id="id-xml-to-json" type="button"
+					class="btn btn-default btn-lg" >xml to json</button>
 			
-			<!-- output -->
-			<div class="col col-xs-8">
-				<div id="xml-to-json" style="display:none;">
-					<button type="button" id="convert-xml-to-json">convert</button>
-					<textarea id="input-xml">
+				<button id="id-json-to-xml" type="button"
+					class="btn btn-default btn-lg">json to xml</button>
+			
+				<button id="id-status" type="button"
+					class="btn btn-danger btn-lg" onclick=location.href='http://192.168.23.117:8080/status'>status</button>
+				<br>
+			</div>
+
+		</div><br>
+
+		<div class="col col-xs-1"></div>
+
+		<!-- output -->
+		<div class="col col-xs-8">
+			<div id="xml-to-json" style="display: none;">
+				<div>
+					<button type="button" id="convert-xml-to-json"
+						class="btn btn-default">convert XML - JSON</button>
+					<br><br>
+				</div>
+				<div>
+					XML<textarea id="input-xml" class="form-control" rows="15">
 <?xml version='1.0' encoding='utf-8'?>
 <bookstore>
 <book category='cooking'>
@@ -60,14 +79,15 @@ var failcount = 0;
 <price>29.9</price>
 </book>
 </bookstore>
-</textarea>
-					
-					<textarea id="output-xml-to-json"></textarea>
+</textarea><br>
+
+					JSON<textarea id="output-xml-to-json" class="form-control" rows="15"></textarea>
 				</div>
-				
-				<div id="json-to-xml" style="display:none;">
-					<button type="button" id="convert-json-to-xml">convert</button>
-					<textarea id="input-json">{
+			</div>
+			<div id="json-to-xml" style="display: none;">
+				<button type="button" id="convert-json-to-xml"
+					class="btn btn-default">convert JSON - XML</button><br><br>
+				JSON<textarea id="input-json" class="form-control" rows="15">{
     "bookstore": {
         "book": [
             {
@@ -92,17 +112,34 @@ var failcount = 0;
             }
         ]
     }
-}</textarea>
-					
-					<textarea id="output-json-to-xml"></textarea>
-				</div>
+}</textarea><br>
+
+				XML<textarea id="output-json-to-xml" class="form-control" rows="15"></textarea>
 			</div>
 		</div>
 	</div>
-	<div id ="status" style="display:none; margin: 15px 25px 15px 10px;">
-	<input id="sucess" type="text"> <input id="fail" type="text"> <input id="total" type="text" >
-	
-	</div>
+	<div class="row">
+		
+			<div id="xtojstatus" style="display: none; margin: 15px 25px 15px 10px;">
+				<div style="margin: 15px 25px 15px 10px;">
+					<input id="success" type="text">
+				
+					<input id="fail" type="text">
+				
+					<input id="addstatus" type="text">
+				</div>					
+			</div>
+			
+			<div id="jtoxstatus" style="display: none; margin: 15px 25px 15px 10px;">
+				<div style="margin: 15px 25px 15px 10px;">
+					<input id="success1" type="text">
+				
+					<input id="fail1" type="text">
+				
+					<input id="addstatus1" type="text">
+				</div>					
+			</div>
+		</div>
 </body>
 
 
@@ -113,19 +150,19 @@ $("#id-xml-to-json").on("click",function(){
 	$("#output-xml-to-json").empty();
 	$("#xml-to-json").show();
 	$("#json-to-xml").hide();
-	$("#status").show();
-	
+	$("#xtojstatus").show();
+	$("#jtoxstatus").hide();
 });
 
 $("#id-json-to-xml").on("click",function(){
 	$("#xml-to-json").hide();
 	$("#output-json-to-xml").empty();
 	$("#json-to-xml").show();
-	$("#status").show();
-	
+	$("#jtoxstatus").show();
+	$("#xtojstatus").hide();
 });
 
-var url = "http://localhost:8080/";
+var url = "http://192.168.23.117:8080/";
 
 var xml2json = function(_data){
 	
@@ -138,17 +175,21 @@ var xml2json = function(_data){
 		success : function(data) {   
 			
 	    	$("#output-xml-to-json").html(JSON.stringify(data,null,4));
-	    	successcount++;
-	    	$('#sucess').val("성공 :"+ (successcount));
-	    	$('#fail').val("실패 :"+(failcount));
-	    	$('#total').val("실행횟수 :"+ (successcount+failcount));
+	    	xtojSuccessCount++;
+	    	$('#success').val("성공 :"+ (xtojSuccessCount));
+	    	$('#fail').val("실패 :"+(xtojFailCount));
+	    	$('#addstatus').val("실행횟수 :"+ (xtojSuccessCount+xtojFailCount));
+	    	return $.ajax({
+		    	url: url + "successXtoJCount"});
 		},
 		error : function(){
 			$("#output-xml-to-json").html("xml2json error");
-			failcount++;
-			$('#sucess').val("성공 :"+ (successcount));
-			$('#fail').val("실패 :"+(failcount));
-			$('#total').val("실행횟수 :"+ (successcount+failcount));
+			xtojFailCount++;
+			$('#success').val("성공 :"+ (xtojSuccessCount));
+			$('#fail').val("실패 :"+(xtojFailCount));
+			$('#addstatus').val("실행횟수 :"+ (xtojSuccessCount+xtojFailCount));
+			return $.ajax({
+		    	url: url + "failXtoJCount"});
 		}
 	});
 	
@@ -164,19 +205,26 @@ var json2xml = function(_data){
 	    contentType : "application/json",
 	    cache: false,
 		success : function(data) {  
-			var xmlText = new XMLSerializer().serializeToString(data);		
+			var xmlText = new XMLSerializer().serializeToString(data);
+				
+			//var oSerializer = new XMLSerializer();
+			//var sPrettyXML = XML(oSerializer.serializeToString(data)).toXMLString();
 	    	$("#output-json-to-xml").html(xmlText);
-	    	successcount++;
-	    	$('#sucess').val("성공 :"+ (successcount));
-	    	$('#fail').val("실패 :"+(failcount));
-	    	$('#total').val("실행횟수 :"+ (successcount+failcount));
+	    	jtoxSuccessCount++;
+	    	$('#success1').val("성공 :"+ (jtoxSuccessCount));
+	    	$('#fail1').val("실패 :"+(jtoxFailCount));
+	    	$('#addstatus1').val("실행횟수 :"+ (jtoxSuccessCount+jtoxFailCount));
+	    	return $.ajax({
+		    	url: url + "successJtoXCount"});
 		},
 		error : function(){
 			$("#output-json-to-xml").html("json2xml error");
-			failcount++;
-			$('#sucess').val("성공 :"+ (successcount));
-			$('#fail').val("실패 :"+(failcount));
-			$('#total').val("실행횟수 :"+ (successcount+failcount));
+			jtoxFailCount++;
+			$('#success1').val("성공 :"+ (jtoxSuccessCount));
+			$('#fail1').val("실패 :"+(jtoxFailCount));
+			$('#addstatus1').val("실행횟수 :"+ (jtoxSuccessCount+jtoxFailCount));
+			return $.ajax({
+		    	url: url + "failJtoXCount"});
 		}
 	});
 }
@@ -187,15 +235,17 @@ $("#convert-xml-to-json").on("click",function(){
 	var data = $("#input-xml").val();
 	
 	if(!data) {
-		data = "<data></data>"
+		data = "<bookstore>";		
 	}
+	
 	xml2json(data);
 });
 
 $("#convert-json-to-xml").on("click",function(){
 	var data = $("#input-json").val();
 	if(!data) {
-		data = "{ a : 1 }"
+		
+		data = "bookstore";
 	}
 	json2xml(data);
 });

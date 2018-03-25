@@ -209,7 +209,7 @@ var json2xml = function(_data){
 				
 			//var oSerializer = new XMLSerializer();
 			//var sPrettyXML = XML(oSerializer.serializeToString(data)).toXMLString();
-	    	$("#output-json-to-xml").html(xmlText);
+	    	$("#output-json-to-xml").val(xmlText);
 	    	jtoxSuccessCount++;
 	    	$('#success1').val("성공 :"+ (jtoxSuccessCount));
 	    	$('#fail1').val("실패 :"+(jtoxFailCount));

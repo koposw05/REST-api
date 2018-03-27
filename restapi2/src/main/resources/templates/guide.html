@@ -15,55 +15,151 @@
 <meta charset="UTF-8">
 <title>GUIDE</title>
 
+<!-- 
 <style>
 textarea {
 	width: 250px;
 	height: 250px;
 }
 </style>
+ -->
+
 <script>
 var xtojSuccessCount = 0;
 var xtojFailCount = 0;
 var jtoxSuccessCount = 0;
 var jtoxFailCount = 0;
-
+var data1=[32,10,55,26];	
 </script>
+
+<link rel="stylesheet" type="text/css"
+	href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" charset="utf8"
+	src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js">
+</script>
+<script>
+var url = "http://192.168.23.117:8080/"
+
+$(document).ready(function() {
+    $('#example').DataTable({
+    // scrollY:500,
+     pageLength: 3,
+     bPaginate: false,
+     bLengthChange: false,
+     lengthMenu : [ [ 3, 5, 10, -1 ], [ 3, 5, 10, "All" ] ],
+     bAutoWidth: false, //컬럼 폭 자동계산
+     processing: false,
+     ordering: false, //정렬사용
+     serverSide: false,
+     searching: false, //검색
+     columnDefs: [
+         {"className": "dt-center", "targets": "_all"} //데이터 가운데 정렬
+       ],
+     ajax: {
+      type : "POST",
+         url : url + "getRecordList.do",
+            dataType: "JSON"
+         },
+        
+        columns: [            		
+                   { data: "process" },
+                   { data: "success" },
+                   { data: "fail" },
+                   { data: "total" },                 
+               ]
+         
+    });
+} );
+</script>
+
+
+
+<meta charset="UTF-8">
+<title>상태조회</title>
+
+<title>Bar Chart</title>
+<script src="http://www.chartjs.org/dist/2.7.2/Chart.bundle.js"></script>
+<script src="http://www.chartjs.org/samples/latest/utils.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+<script src="http://www.chartjs.org/dist/2.7.2/Chart.js"></script>
+<style>
+canvas {
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+</style>
 </head>
 <body>
 	<center>
-		<h1>XML - JSON 양방향 변환</h1>
+		<h1>XML - JSON 양방향 변환 서비스</h1>
 	</center>
-	<div class="container-fluid">
-		<div class="row">
+	<div class="container">
 
-			<!-- buttons -->
+		<ul id="myTab" class="nav nav-tabs" role="tablist"
+			style="margin: 15px 25px 15px 10px;">
+			<li role="presentation" class="active"><a data-target="#home"
+				id="id-xml-to-json" role="tab" data-toggle="tab"
+				aria-controls="home" aria-expanded="true"><h4>XML - JSON</h4></a></li>
+			<li role="presentation" class=""><a data-target="#profile"
+				role="tab" id="id-json-to-xml" data-toggle="tab"
+				aria-controls="profile" aria-expanded="false"><h4>JSON -
+						XML</h4></a></li>
+			<li role="presentation" class=""><a data-target="#status"
+				role="tab" id="statusTab" data-toggle="tab" aria-controls="profile"
+				aria-expanded="false"><h4>통계조회</h4></a></li>
+
+
+			</li>
+		</ul>
+
+		<div class="container-fluid">
+			<div class="row">
+
+				<!-- buttons 
 			<div style="margin: 15px 25px 15px 10px;">
 
 				<button id="id-xml-to-json" type="button"
-					class="btn btn-default btn-lg" >xml to json</button>
+					class="btn btn-outline-success btn-lg" >xml to json</button>
 			
 				<button id="id-json-to-xml" type="button"
-					class="btn btn-default btn-lg">json to xml</button>
+					class="btn btn-outline-success btn-lg">json to xml</button>
 			
 				<button id="id-status" type="button"
-					class="btn btn-danger btn-lg" onclick=location.href='http://localhost:8080/status'>status</button>
+					class="btn btn-danger btn-lg" onclick=location.href='http://192.168.23.117:8080/status'>통계조회</button>
 				<br>
 			</div>
+-->
+			</div>
+			<br>
 
-		</div><br>
+			<div class="col col-xs-1"></div>
 
-		<div class="col col-xs-1"></div>
+			<!-- output -->
+			<div class="col col-xs-8">
+				<div id="xml-to-json">
+					<div>
+						<button type="button" id="convert-xml-to-json"
+							class="btn btn-default">convert XML - JSON</button>
+							<button type="button" id="clear-xml-to-json"
+							class="btn btn-default" >clear</button>
+						<div id="xtojstatus" style="margin: 15px 25px 15px 10px;">
 
-		<!-- output -->
-		<div class="col col-xs-8">
-			<div id="xml-to-json" style="display: none;">
-				<div>
-					<button type="button" id="convert-xml-to-json"
-						class="btn btn-default">convert XML - JSON</button>
-					<br><br>
-				</div>
-				<div>
-					XML<textarea id="input-xml" class="form-control" rows="15">
+							<input id="success" type="text"> <input id="fail"
+								type="text"> <input id="addstatus" type="text">
+
+						</div>
+						<br> <br>
+					</div>
+					<div
+						style="width: 1000px; height: 150px; border: 0px solid red; float: left; margin-right: 10px;">
+						<div
+							style="width: 400px; height: 150px; border: 0px solid red; float: left; margin-right: 10px;">
+							XML
+							<textarea id="input-xml" class="form-control" rows="25">
 <?xml version='1.0' encoding='utf-8'?>
 <bookstore>
 <book category='cooking'>
@@ -79,15 +175,35 @@ var jtoxFailCount = 0;
 <price>29.9</price>
 </book>
 </bookstore>
-</textarea><br>
-
-					JSON<textarea id="output-xml-to-json" class="form-control" rows="15"></textarea>
+</textarea>
+						</div>
+						<div
+							style="width: 400px; height: 150px; border: 0px solid red; float: right; margin-right: 10px;">
+							JSON
+							<textarea id="output-xml-to-json" class="form-control" rows="25"></textarea>
+						</div>
+					</div>
 				</div>
-			</div>
-			<div id="json-to-xml" style="display: none;">
-				<button type="button" id="convert-json-to-xml"
-					class="btn btn-default">convert JSON - XML</button><br><br>
-				JSON<textarea id="input-json" class="form-control" rows="15">{
+				<div id="json-to-xml" style="display: none;">
+
+					<button type="button" id="convert-json-to-xml"
+						class="btn btn-default">convert JSON - XML</button>
+						<button type="button" id="clear-json-to-xml"
+							class="btn btn-default" >clear</button>
+					<div id="jtoxstatus"
+						style="display: none; margin: 15px 25px 15px 10px;">
+
+						<input id="success1" type="text"> <input id="fail1"
+							type="text"> <input id="addstatus1" type="text">
+
+					</div>
+					<br> <br>
+					<div
+						style="width: 1000px; height: 150px; border: 0px solid red; float: left; margin-right: 10px;">
+						<div
+							style="width: 400px; height: 150px; border: 0px solid red; float: left; margin-right: 10px;">
+							JSON
+							<textarea id="input-json" class="form-control" rows="25">{
     "bookstore": {
         "book": [
             {
@@ -112,39 +228,132 @@ var jtoxFailCount = 0;
             }
         ]
     }
-}</textarea><br>
+}</textarea>
+						</div>
+						<div
+							style="width: 400px; height: 150px; border: 0px solid green; float: right;">
+							XML
+							<textarea id="output-json-to-xml" class="form-control" rows="25"></textarea>
+						</div>
+					</div>
+				</div>
 
-				XML<textarea id="output-json-to-xml" class="form-control" rows="15"></textarea>
-			</div>
-		</div>
+				<div id="status" style="display: none;">
+				<div>
+		<table id="example" class="table table-striped table-bordered"
+			cellspacing="0" width="100%">
+
+			<thead>
+				<tr>
+					<h1>통계조회</h1>
+					<th>PROCESS</th>
+					<th>SUCCESS</th>
+					<th>FAIL</th>
+					<th>CALLTOTAL</th>
+				</tr>
+			</thead>
+			<!-- tbody 태그 필요 없다. -->
+		</table>
 	</div>
-	<div class="row">
+	<div id="container" style="width: 75%;">
+		<canvas id="canvas"></canvas>
+
+	</div>
+
+	<div id="canvas-holder" style="width: 80%">
+		<canvas id="chart-area"></canvas>
+	</div>
+
+	<script>
 		
-			<div id="xtojstatus" style="display: none; margin: 15px 25px 15px 10px;">
-				<div style="margin: 15px 25px 15px 10px;">
-					<input id="success" type="text">
-				
-					<input id="fail" type="text">
-				
-					<input id="addstatus" type="text">
-				</div>					
-			</div>
+	var randomScalingFactor = function() {
+			return Math.round(Math.random() * 100);
+		};
+
+		var config = {
+			type: 'pie',
 			
-			<div id="jtoxstatus" style="display: none; margin: 15px 25px 15px 10px;">
-				<div style="margin: 15px 25px 15px 10px;">
-					<input id="success1" type="text">
+			data: {
+				datasets: [{
+
+
+					data: data1,
+					backgroundColor: [
+						window.chartColors.red,
+						window.chartColors.orange,
+						window.chartColors.yellow,
+						window.chartColors.green,
+						
+					],
+					label: 'Dataset 1'
+				}],
+				labels: [
+					'X2JSUCCESS',
+					'X2JFAIL',
+					'J2XSUCCESS',
+					'J2XFAIL',
 				
-					<input id="fail1" type="text">
-				
-					<input id="addstatus1" type="text">
-				</div>					
+				]
+			},
+			options: {
+				responsive: true
+			}
+		};
+
+		window.onload = function() {
+			var ctx = document.getElementById('chart-area').getContext('2d');
+			window.myPie = new Chart(ctx, config);
+		};
+
+		document.getElementById('randomizeData').addEventListener('click', function() {
+			config.data.datasets.forEach(function(dataset) {
+				dataset.data = dataset.data.map(function() {
+					return randomScalingFactor();
+				});
+			});
+
+			window.myPie.update();
+		});
+
+		var colorNames = Object.keys(window.chartColors);
+		document.getElementById('addDataset').addEventListener('click', function() {
+			var newDataset = {
+				backgroundColor: [],
+				data: [],
+				label: 'New dataset ' + config.data.datasets.length,
+			};
+
+			for (var index = 0; index < config.data.labels.length; ++index) {
+				newDataset.data.push(randomScalingFactor());
+
+				var colorName = colorNames[index % colorNames.length];
+				var newColor = window.chartColors[colorName];
+				newDataset.backgroundColor.push(newColor);
+			}
+
+			config.data.datasets.push(newDataset);
+			window.myPie.update();
+		});
+
+		document.getElementById('removeDataset').addEventListener('click', function() {
+			config.data.datasets.splice(0, 1);
+			window.myPie.update();
+		});
+
+		
+	</script>
+				</div>
 			</div>
-		</div>
 </body>
 
 
 <script>
-
+$("#clear-xml-to-json").on("click",function(){
+	$("#input-xml").empty();
+});
+$("#clear-json-to-xml").on("click",function(){
+	$("#input-json").empty();
+});
 
 $("#id-xml-to-json").on("click",function(){
 	$("#output-xml-to-json").empty();
@@ -152,6 +361,7 @@ $("#id-xml-to-json").on("click",function(){
 	$("#json-to-xml").hide();
 	$("#xtojstatus").show();
 	$("#jtoxstatus").hide();
+	$("#status").hide();
 });
 
 $("#id-json-to-xml").on("click",function(){
@@ -160,9 +370,20 @@ $("#id-json-to-xml").on("click",function(){
 	$("#json-to-xml").show();
 	$("#jtoxstatus").show();
 	$("#xtojstatus").hide();
+	$("#status").hide();
 });
 
-var url = "http://localhost:8080/";
+$("#statusTab").on("click",function(){
+	
+	$("#xml-to-json").hide();
+	$("#output-json-to-xml").empty();
+	$("#json-to-xml").hide();
+	$("#jtoxstatus").hide();
+	$("#xtojstatus").hide();
+	$("#status").show();
+});
+
+var url = "http://192.168.23.117:8080/";
 
 var xml2json = function(_data){
 	
@@ -173,7 +394,7 @@ var xml2json = function(_data){
 	    contentType : "application/xml",
 	    cache: false,
 		success : function(data) {   
-			
+			console.log(data);
 	    	$("#output-xml-to-json").html(JSON.stringify(data,null,4));
 	    	xtojSuccessCount++;
 	    	$('#success').val("성공 :"+ (xtojSuccessCount));
@@ -245,7 +466,7 @@ $("#convert-json-to-xml").on("click",function(){
 	var data = $("#input-json").val();
 	if(!data) {
 		
-		data = "bookstore";
+		data = "{bookstore}";
 	}
 	json2xml(data);
 });

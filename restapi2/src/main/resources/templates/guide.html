@@ -75,23 +75,23 @@ function datatable() {
        ],
      ajax: {
       type : "POST",
-         url : url + "getRecordList.do",
-            dataType: "JSON"
+      cache : false,
+      url : url + "getRecordList.do",
+      dataType: "JSON",
+      
          },
-        
+             
         columns: [            		
 
             	   { data: "process" },
                    { data: "success" },
                    { data: "fail" },
                    { data: "total" },                 
-               ]
+               ],
+        
          
-    });
-
-	
+    });    	
 };
-datatable(); 
 </script>
 
 
@@ -117,10 +117,10 @@ var config;
 function ajaxCall() {
 	 $.ajax({ 
 		 		 
-         type:"GET",
-
+         type:"POST",
+		 
          url: url + "getRecordList1.do",
-
+         cache : false,
          dataType:"JSON", //옵션이므로 JSON으로 받을게 아니면 안써도 됨
          async: false, //ajax데이터를 전역변수로 사용하려면 비동기방식을 false로 설정해 줘야한다.
          success : function(data) {
@@ -133,41 +133,7 @@ function ajaxCall() {
        	  x2jFail = data.resultVO[0].fail;
        	  j2xSuccess = data.resultVO[1].success;
        	  j2xFail = data.resultVO[1].fail;
-       	  config = { //chartjs데이터
-       			
-       			type: 'bar',
-       			
-       			data: {
-       				datasets: [{
-
-
-       					data: [x2jSuccess,x2jFail,j2xSuccess,j2xFail],
-       					backgroundColor: [
-       						window.chartColors.blue,
-       						window.chartColors.red,
-       						window.chartColors.blue,
-       						window.chartColors.red,
-       						
-       					],
-       					label: '통계조회'
-       				}],
-       				labels: [
-       					'X2JSUCCESS',
-       					'X2JFAIL',
-       					'J2XSUCCESS',
-       					'J2XFAIL',
-       				
-       				]
-       			},
-       			options: {
-       				responsive: true,
-       				scaleOverride: true,
-       				scaleSteps: 10,
-       			    scaleStartValue: 0,
-       			    scales: { yAxes: [{ ticks: { beginAtZero:true } }] }   //y축 데이터값 시작을 0부터시작
-       			},
-       			
-       		}
+       	  
          }
          
 	 });
@@ -204,22 +170,59 @@ test(); */
 //test();
 
 //console.log("inchart : "+test1);
-	ajaxCall();
+	
 	function chartjs() {
+config = { //chartjs데이터
+       			
+       			type: 'bar',
+       			
+       			data: {
+       				datasets: [{
+
+
+       					data: [x2jSuccess,x2jFail,j2xSuccess,j2xFail],
+       					backgroundColor: [
+       						window.chartColors.blue,
+       						window.chartColors.red,
+       						window.chartColors.blue,
+       						window.chartColors.red,
+       						
+       					],
+       					label: '통계조회'
+       				}],
+       				labels: [
+       					'X2JSUCCESS',
+       					'X2JFAIL',
+       					'J2XSUCCESS',
+       					'J2XFAIL',
+       				
+       				]
+       			},
+       			options: {
+       				responsive: true,
+       				scaleOverride: true,
+       				scaleSteps: 10,
+       			    scaleStartValue: 0,
+       			    scales: { yAxes: [{ ticks: { beginAtZero:true } }] }   //y축 데이터값 시작을 0부터시작
+       			},
+       			
+       		}
 		var ctx = document.getElementById('chart-area').getContext('2d');
 		window.myPie = new Chart(ctx, config);
 		//console.log("inchart : "+test1);
 	}
 	 	   	  
-	setInterval(function(){
+	/* setInterval(function(){
 	//alert(config.data.datasets[0].data);
-	datatable();
+	
 	//location.reload();
-	ajaxCall();
+	datatable();
 	chartjs();
+	ajaxCall();
+	
 	//$(document).ready();
 	
-	}, 5000);
+	}, 5000); */
 	
 </script>
 <script>
@@ -252,7 +255,7 @@ setInterval('autoRefresh_div()', 3000);  */
 				aria-expanded="false"><h4>통계조회</h4></a></li>
 
 
-			</li>
+			
 		</ul>
 
 		<div class="container-fluid">
@@ -446,7 +449,11 @@ $("#statusTab").on("click",function(){
 	$("#jtoxstatus").hide();
 	$("#xtojstatus").hide();
 	$("#status").show();
+	ajaxCall();
+	chartjs();
 	
+	
+	datatable();
 });
 
 //xml2json변환 컨트롤러 호출

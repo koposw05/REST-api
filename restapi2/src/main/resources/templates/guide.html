@@ -113,7 +113,6 @@ canvas {
 <script>
 
 //통계 데이터 호출
-var config;
 function ajaxCall() {
 	 $.ajax({ 
 		 		 
@@ -133,11 +132,48 @@ function ajaxCall() {
        	  x2jFail = data.resultVO[0].fail;
        	  j2xSuccess = data.resultVO[1].success;
        	  j2xFail = data.resultVO[1].fail;
-       	  
+config = { //chartjs데이터
+       			
+       			type: 'bar',
+       			
+       			data: {
+       				datasets: [{
+
+
+       					data: [x2jSuccess,x2jFail,j2xSuccess,j2xFail],
+       					backgroundColor: [
+       						window.chartColors.blue,
+       						window.chartColors.red,
+       						window.chartColors.blue,
+       						window.chartColors.red,
+       						
+       					],
+       					label: '통계조회 :'
+       				}],
+       				labels: [
+       					'X2JSUCCESS',
+       					'X2JFAIL',
+       					'J2XSUCCESS',
+       					'J2XFAIL',
+       				
+       				]
+       			},
+       			options: {
+       				cache : false,
+       				responsive: true, 
+       				maintainAspectRatio: true,
+       				scaleOverride: false,
+       				scaleSteps: 10,
+       			    scaleStartValue: 0,
+       			    scales: { yAxes: [{ ticks: { beginAtZero:true } }] }   //y축 데이터값 시작을 0부터시작
+       			},
+       			
+       		};
          }
          
 	 });
-	 console.log("inajax :"+x2jSuccess);	
+	 console.log("inajax :"+x2jSuccess);
+	 
 }
 //setInterval(function(){alert("Hello")},3000);
 
@@ -170,48 +206,24 @@ test(); */
 //test();
 
 //console.log("inchart : "+test1);
+	/* ajaxCall();
+	console.log("test");
+console.log(x2jSuccess,x2jFail,j2xSuccess,j2xFail);     */ 	
+var myBar;
+function chartCall() {
+	if(myBar != null)
+		window.myBar.destroy();
+	ctx = document.getElementById('chart-area').getContext('2d');
+ 	window.myBar = new Chart(ctx, config);
+ //window.myBar.update();
+};
+		
+		    //myBar.destroy(); // if not null call destroy
+		//myBar.removeData();
+		//ctx = document.getElementById('chart-area').getContext('2d');
+					
 	
-	function chartjs() {
-config = { //chartjs데이터
-       			
-       			type: 'bar',
-       			
-       			data: {
-       				datasets: [{
-
-
-       					data: [x2jSuccess,x2jFail,j2xSuccess,j2xFail],
-       					backgroundColor: [
-       						window.chartColors.blue,
-       						window.chartColors.red,
-       						window.chartColors.blue,
-       						window.chartColors.red,
-       						
-       					],
-       					label: '통계조회'
-       				}],
-       				labels: [
-       					'X2JSUCCESS',
-       					'X2JFAIL',
-       					'J2XSUCCESS',
-       					'J2XFAIL',
-       				
-       				]
-       			},
-       			options: {
-       				responsive: true,
-       				scaleOverride: true,
-       				scaleSteps: 10,
-       			    scaleStartValue: 0,
-       			    scales: { yAxes: [{ ticks: { beginAtZero:true } }] }   //y축 데이터값 시작을 0부터시작
-       			},
-       			
-       		}
-		var ctx = document.getElementById('chart-area').getContext('2d');
-		window.myPie = new Chart(ctx, config);
-		//console.log("inchart : "+test1);
-	}
-	 	   	  
+	
 	/* setInterval(function(){
 	//alert(config.data.datasets[0].data);
 	
@@ -450,10 +462,10 @@ $("#statusTab").on("click",function(){
 	$("#xtojstatus").hide();
 	$("#status").show();
 	ajaxCall();
-	chartjs();
-	
-	
 	datatable();
+	chartCall();
+	
+	
 });
 
 //xml2json변환 컨트롤러 호출
